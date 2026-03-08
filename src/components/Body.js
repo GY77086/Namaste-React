@@ -189,11 +189,14 @@ sla:{deliveryTime:27}
     return (
             <div className="body">
                 <div className="filter"> 
-                    <button className="filter-btn" onClick={() => {
+                    <button className="filter-btn" onClick={() => 
+                    {
                         restList = restList.filter (
-                            (rest) => rest.info.avgRating > 4.2);
-                            console.log(restList);
-                            }}>Top Rated Restaurants</button>
+                                                    (rest) => rest.info.avgRating > 4.2);
+                                                        console.log(restList);
+                    }}>
+                        Top Rated Restaurants
+                    </button>
                 </div>
                 <div className="restaurant-container">
                     {
@@ -208,6 +211,9 @@ sla:{deliveryTime:27}
 export default Body;
 
 
+
+
+// Another way to pass props to the restaurant card component
 {/* <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian" />
                     <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
                     <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
