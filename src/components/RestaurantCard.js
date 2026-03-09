@@ -1,5 +1,5 @@
 import { CDN_URL } from "../utils/constants.js";
-const RestaurantCard = ({ restData }) =>
+const RestaurantCard = ({restData}) =>
 {
     // const {restData} = props;
     const 
@@ -11,10 +11,10 @@ const RestaurantCard = ({ restData }) =>
         costForTwo,
         deliveryTime,
         sla
-    } = restData.info;
+    } = restData;
     return (
             <div className="restaurant-card" style={{backgroundColor : "#f0f0f0"}}>
-                <img className="restaurant-pic" src={CDN_URL +  restData.info.cloudinaryImageId} alt="restaurant-pic"></img>
+                <img className="restaurant-pic" src={CDN_URL +  restData.cloudinaryImageId} alt="restaurant-pic"></img>
                 <h3> {name} </h3>
                 <h5> {cuisines.join(", ")} </h5>
                 <h5> {avgRating} ⭐ </h5>    

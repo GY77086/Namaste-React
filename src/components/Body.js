@@ -1,208 +1,39 @@
 import RestaurantCard from "./RestaurantCard.js";  
-// import { restList } from "../utils/mockData.js";
+import { useState } from "react";
+import restList from "../utils/mockData.js";
+
 // not using keys (not acceptable) <<<<< using index as key <<<<<<<<< using unique id (best practice)
 const Body = () =>
 {
-    let restList = [
-{
-info:{
-id:"334475",
-name:"KFC",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Burgers","Biryani","American","Snacks","Fast Food"],
-avgRating:4.2,
-costForTwo:"₹400 for two",
-sla:{deliveryTime:36}
-}
-},
+    // Local state variable - Super powerful variable (super variable)
+    // const [restaurantList, setRestaurantList] = useState (restList); // useState is a hook that returns an array with two elements - the current state value and a function to update the state value (Destuuctring on the fly)
+    
+    // OR
 
-{
-info:{
-id:"10575",
-name:"Pizza Hut",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Pizzas"],
-avgRating:4.1,
-costForTwo:"₹350 for two",
-sla:{deliveryTime:28}
-}
-},
-
-{
-info:{
-id:"56782",
-name:"Burger King",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Burgers","American"],
-avgRating:4.3,
-costForTwo:"₹350 for two",
-sla:{deliveryTime:25}
-}
-},
-
-{
-info:{
-id:"89876",
-name:"Domino's Pizza",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Pizza","Italian","Pastas"],
-avgRating:4.4,
-costForTwo:"₹400 for two",
-sla:{deliveryTime:30}
-}
-},
-
-{
-info:{
-id:"90876",
-name:"McDonald's",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Burgers","Beverages","Cafe"],
-avgRating:4.1,
-costForTwo:"₹300 for two",
-sla:{deliveryTime:22}
-}
-},
-
-{
-info:{
-id:"11223",
-name:"Biryani Blues",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Biryani","Hyderabadi","Kebabs"],
-avgRating:4.3,
-costForTwo:"₹450 for two",
-sla:{deliveryTime:32}
-}
-},
-
-{
-info:{
-id:"44567",
-name:"Subway",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Salads","Snacks","Desserts","Beverages"],
-avgRating:4.0,
-costForTwo:"₹350 for two",
-sla:{deliveryTime:24}
-}
-},
-
-{
-info:{
-id:"77889",
-name:"Behrouz Biryani",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Biryani","Mughlai","Lucknowi"],
-avgRating:4.5,
-costForTwo:"₹500 for two",
-sla:{deliveryTime:35}
-}
-},
-
-{
-info:{
-id:"99881",
-name:"Faasos",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Wraps","Rolls","Fast Food"],
-avgRating:4.2,
-costForTwo:"₹300 for two",
-sla:{deliveryTime:26}
-}
-},
-
-{
-info:{
-id:"77665",
-name:"The Belgian Waffle Co.",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Waffle","Desserts","Ice Cream"],
-avgRating:4.6,
-costForTwo:"₹250 for two",
-sla:{deliveryTime:20}
-}
-},
-
-{
-info:{
-id:"55678",
-name:"Wow! Momo",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Momos","Chinese","Tibetan"],
-avgRating:4.1,
-costForTwo:"₹300 for two",
-sla:{deliveryTime:23}
-}
-},
-
-{
-info:{
-id:"88765",
-name:"Natural Ice Cream",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["Ice Cream","Desserts"],
-avgRating:4.7,
-costForTwo:"₹200 for two",
-sla:{deliveryTime:18}
-}
-},
-
-{
-info:{
-id:"33221",
-name:"Barbeque Nation",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["BBQ","North Indian","Kebabs"],
-avgRating:4.5,
-costForTwo:"₹800 for two",
-sla:{deliveryTime:40}
-}
-},
-
-{
-info:{
-id:"55443",
-name:"Haldiram's",
-cloudinaryImageId:"dimg_oP6rabnKNOL5seMPrbaDkQk_213",
-cuisines:["North Indian","Sweets","Snacks"],
-avgRating:4.4,
-costForTwo:"₹300 for two",
-sla:{deliveryTime:21}
-}
-},
-
-{
-info:{
-id:"90909",
-name:"La Pino'z Pizza",
-cloudinaryImageId:"dimg_4AGsaamiGYnw4-EP88OZyQY_279",
-cuisines:["Pizza","Italian"],
-avgRating:4.2,
-costForTwo:"₹400 for two",
-sla:{deliveryTime:27}
-}
-}
-];
-
-
+    // const arr = useState (restList);
+    // const [restaurantList, setRestaurantList] = arr; // array destructuring (destructuring assignment) - we are extracting the values from the array and assigning them to individual variables
+    
+    // OR
+    const arr = useState (restList);
+    const restaurantList = arr [0]; // restaturantList is the first element of the array (the current state value)
+    const setRestaurantList = arr [1]; // setRestaurantList is the second element of the array (the function to update the state value)
     return (
             <div className="body">
                 <div className="filter"> 
-                    <button className="filter-btn" onClick={() => 
+                    <button 
+                    className="filter-btn" onClick={() => 
                     {
-                        restList = restList.filter (
-                                                    (rest) => rest.info.avgRating > 4.2);
-                                                        console.log(restList);
+                        //  Whenever our state variable changes, react re-render the component or  triggers a reconciliation cycle (react compares the new virtual dom with the old virtual dom and updates the real dom accordingly)
+                        const filteredList = restaurantList.filter ((rest) => rest.avgRating > 4.2);                                                  
+                        setRestaurantList (filteredList);
+                        console.log(restaurantList);
                     }}>
                         Top Rated Restaurants
                     </button>
                 </div>
                 <div className="restaurant-container">
                     {
-                        restList.map((restaurant) => (
-                                                        <RestaurantCard key={restaurant.info.id} restData={restaurant} />
-                                                    ))
+                        restaurantList.map((rest) => (<RestaurantCard key={rest.id} restData={rest} />))
                     }
                 </div>
             </div>
