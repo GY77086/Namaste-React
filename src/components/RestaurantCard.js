@@ -12,14 +12,16 @@ const RestaurantCard = ({restData}) =>
         deliveryTime,
         sla
     } = restData;
+
+
     return (
-            <div className="restaurant-card" style={{backgroundColor : "#f0f0f0"}}>
+            <div className="restaurant-card" >
                 <img className="restaurant-pic" src={CDN_URL +  restData.cloudinaryImageId} alt="restaurant-pic"></img>
                 <h3> {name} </h3>
                 <h5> {cuisines.join(", ")} </h5>
                 <h5> {avgRating} ⭐ </h5>    
                 <h5> {costForTwo} </h5>
-                <h5> {sla.deliveryTime} mins </h5>
+                <h5> {sla?.deliveryTime} mins </h5>
             </div>
             );
 }
