@@ -1,4 +1,4 @@
-# This is my Namste Treact Doc.. me file
+# This is my Namaste React Doc.. file
 
 Author: dbugger01
 
