@@ -1,33 +1,48 @@
 import express from "express";
 import cors from "cors";
-import fetch from "node-fetch";
 
 const app = express();
-app.use(cors());
-
 const PORT = 5000;
 
-// API route
+app.use(cors());
+
 app.get("/menu", async (req, res) => {
   try {
-    const response = await fetch(
-      "https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=26.4750346&lng=80.3532749&restaurantId=454951&catalog_qa=undefined&submitAction=ENTER",
-      {
-        headers: {
-          "User-Agent": "Mozilla/5.0",
-          "Accept": "application/json",
-        },
+    const restaurantId = req.query.id;
+
+    if (!restaurantId) {
+      return res.status(400).json({
+        error: "Restaurant ID is required"
+      });
+    }
+
+    const url = `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=26.8467&lng=80.9462&restaurantId=${restaurantId}`;
+
+    console.log("Fetching:", url);
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+        "Accept": "application/json",
+        "Referer": "https://www.swiggy.com/",
+        "Origin": "https://www.swiggy.com"
       }
-    );
+    });
 
     const data = await response.json();
+
     res.json(data);
-  } catch (err) {
-    console.error("Error fetching menu:", err);
-    res.status(500).json({ error: "Failed to fetch menu" });
+
+  } catch (error) {
+    console.log("FULL ERROR:", error.message);
+
+    res.status(500).json({
+      error: "Failed to fetch Swiggy data"
+    });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
