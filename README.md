@@ -1,6 +1,6 @@
-# This is my Namaste React Doc.. file
+# This is my React file
 
-Author: dbugger01
+## Author: dbugger01
 
 ## Parcel
 
@@ -24,7 +24,6 @@ Author: dbugger01
   - syntax:
     - export default component;
     - import component from "path";
-
 - Named Export/Import
   - syntax:
     - export const component;
@@ -33,5 +32,10 @@ Author: dbugger01
 ## React Hooks: Normal JS utility function
 
 - one of the important utility function of react
-  - useState (): use to generate super powerful variables in react
-  - useEffect ():
+  - useState () : use to generate super powerful variables in react
+  - useEffect () :
+
+## 2 Types of Routing in Web App
+
+- Client Side Routing
+- Server Side Routing
