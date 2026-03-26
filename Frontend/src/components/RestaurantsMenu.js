@@ -1,73 +1,55 @@
-import {useState, useEffect} from "react";
 import CardShimmer from "./CardShimmer";
-import menuData from "../utils/menuData.json";
-
+import {useParams} from "react-router-dom";
+import useRestaurantMenu from "../utils/useRestaurantMenu.js";
+import useOnlineStatus from "../utils/useOnlineStatus.js";
 const RestaurantsMenu = () =>
 {
-    const [restInfo , setRestInfo] = useState (null);
-    useEffect (() =>
-    {
-        fetchMenu ();
-    }, []);
+    
+    const {restId} = useParams ();
+    console.log (restId);
 
-    const fetchMenu = async () =>
+    const restInfo = useRestaurantMenu ();
+
+    const internetStatus = useOnlineStatus ();
+    if (internetStatus === false)
     {
-        // const menuData = await fetch ("https://corsproxy.io/?https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=26.4750346&lng=80.3532749&restaurantId=359354&catalog_qa=undefined&submitAction=ENTER");
-        // const menuData = await fetch("https://corsproxy.io/?https://www.themealdb.com/api/json/v1/1/search.php?s=");
-        // const jsonData = await menuData.json();
-        // setRestInfo(jsonData?.meals);
-        // setRestInfo(jsonData?.data);
-        setRestInfo(menuData.data);
+        return <h1> Looks Like You Are Offline !! Please check Your Internet Connection 🙄🙄 </h1>
     }
-        
 
     if (restInfo === null)
     {
         return <CardShimmer/>;
     }
 
-// const items =
-    //     restInfo?.data?.cards
-    //         ?.find(card => card?.groupedCard)
-    //         ?.groupedCard?.cardGroupMap?.REGULAR?.cards
-    //         ?.flatMap(card =>
-    //             card?.card?.card?.itemCards || []
-    //         )
-    //         ?.map(item => item?.card?.info) || [];
-
-
-    const 
+    
+    const restaurantInfo = restInfo?.data?.cards[2]?.card?.card?.info;
+    
+    const
     {
         name,
         cuisines,
-        costForTwoMessage
-    } = restInfo?.cards[2]?.card?.card?.info || {};
+        costForTwoMessage,
+        avgRating,
+    } = restaurantInfo || {};
 
-    
-    return  (
+    const itemCards = restInfo?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[2]?.card?.card.itemCards || {};
+    console.log (itemCards);
+
+    return (
         <div className="menu">
-            {
-                // restInfo.map ((item) =>
-                // {
-                //     return (
-                //         <div className="menu-card" key={item.idMeal}>
-                //             <img className="menu-img" src={item.strMealThumb} alt={item.strMeal}/>
-                //             <h3> {item.strMeal} </h3>
-                //             <p><b> Category: </b> {item.strCategory} </p>
-                //             <p><b> Cuisine: </b> {item.strArea} </p>
-                //             <p className="menu-desc"> {item.strInstructions.slice(0, 80)}... </p>
-                //             <button className="menu-btn">
-                //                 View Recipe
-                //             </button>
-                //         </div>
-                //     );
-                // })
-
-                
-            }
-            <h1>{name}</h1>
-            <p>{cuisines.join (" ")} - {costForTwoMessage}</p>
-            
+            <div className="card-img">
+                <img className="menu-img" src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_264,h_324,c_fill/RX_THUMBNAIL/IMAGES/VENDOR/2024/6/20/94149176-2053-43b4-b291-2864557cfac5_862473.JPG" alt={name}/> 
+            </div>
+            <div className="menu-details">
+                <h2>{name}</h2>
+                <h5>
+                    {cuisines?.join(",")} - {costForTwoMessage} 
+                </h5>
+                <h5> {"Rating - "} {avgRating} ⭐</h5>
+                <ul>
+                    {itemCards.map (item => <li key = {item.card.info.id}>{item.card.info.name} - Rs.{item.card.info.price / 100}</li>)}
+                </ul>
+            </div>
         </div>
     );
 }

@@ -1,7 +1,8 @@
 import RestaurantCard from "./RestaurantCard.js";  
 import { useState, useEffect } from "react";
 import CardShimmer from "./CardShimmer.js";
-
+import {Link} from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus.js";
 
 // not using keys (not acceptable) <<<<< using index as key <<<<<<<<< using unique id (best practice)
 const Body = () =>
@@ -30,16 +31,23 @@ const Body = () =>
 
     const fetchData = async () =>
     {
-        // const data = await fetch ("https://www.swiggy.com/dapi/misc/launch");
-        // const data = await fetch ("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
-        const data = await fetch ("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
-        
+        // const data = await fetch ("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");        
+          const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+
         const jsonData = await data.json();
         console.log(jsonData);
-        const restaurants = jsonData?.data?.cards?.map((card) => card?.card?.card?.gridElements?.infoWithStyle?.restaurants)?.find((res) => res !== undefined); // optional chaining (?.) - it allows us to access the properties of an object without having to check if the object is null or undefined (it returns undefined if the object is null or undefined)
+        const restaurants = jsonData?.data?.cards?.map((c) => c?.card?.card?.gridElements?.infoWithStyle?.restaurants)?.find((res) => {if(res != undefined){return res;}}); // optional chaining (?.) - it allows us to access the properties of an object without having to check if the object is null or undefined (it returns undefined if the object is null or undefined)
+        console.log(restaurants);        
         setRestaurantList (restaurants);
         setFilteredRestaurantList (restaurants);
+    }  
+
+    const internetStatus = useOnlineStatus ();
+    if (internetStatus === false)
+    {
+        return <h1>Looks Like You Are Offline !! Please check Your Internet Connection 🙄🙄 </h1>
     }
+
     // Conditional rendering - if restaurantList is empty, show the shimmer effect (loading state) - otherwise, show the restaurant cards
     // if (restaurantList.length === 0)
     // {
@@ -47,8 +55,7 @@ const Body = () =>
     // }
 
     // OR ADDING SHIMMER EFFECT IN THE RETURN STATEMENT USING TERNARY OPERATOR 
-    return restaurantList.length === 0 ? <CardShimmer /> : 
-    (
+    return restaurantList.length === 0 ? <CardShimmer /> : (
         <div className="body">
             <div className="filter"> 
                 <div className="search">
@@ -81,7 +88,7 @@ const Body = () =>
                         //  Whenever our state variable changes, react re-render the component or  triggers a reconciliation cycle (react compares the new virtual dom with the old virtual dom and updates the real dom accordingly)
                         const filteredList = restaurantList.filter ((rest) => rest.info.avgRating >= 4.5);                                                
                         setFilteredRestaurantList (filteredList);
-                        // console.log(filteredList);
+                        console.log(filteredList);
                     }
                 }>
                     Top Rated Restaurants
@@ -89,9 +96,10 @@ const Body = () =>
             </div>
             <div className="restaurant-container">
                 {
-                    filteredRestaurantList.map((restaurant) => (<RestaurantCard key={restaurant.info.id} restData={restaurant.info} />))
+                    filteredRestaurantList.map((restaurant) => (<Link key={restaurant.info.id} to={"/restaurant/" + restaurant.info.id}><RestaurantCard  restData={restaurant.info} /></Link>))
                 }
             </div>
+
         </div>
     );
 };
@@ -100,18 +108,18 @@ export default Body;
 
 
 
-// Another way to pass props to the restaurant card component
-{/* <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian" />
-                    <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
-                    <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
-                    <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
-                    <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
-                    <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
-                    <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian"/>
-                    <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
-                    <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
-                    <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
-                    <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
-                    <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
-                    <RestaurantCard restaurantname="Meghana Food"  cuisine="Shahi Paneer, South Indian" />
-                    <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" /> */}
+// // Another way to pass props to the restaurant card component
+// {/* <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian" />
+//                     <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
+//                     <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
+//                     <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
+//                     <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
+//                     <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
+//                     <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian"/>
+//                     <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
+//                     <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
+//                     <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
+//                     <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
+//                     <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
+//                     <RestaurantCard restaurantname="Meghana Food"  cuisine="Shahi Paneer, South Indian" />
+//                     <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" /> */}
