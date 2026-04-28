@@ -1,8 +1,9 @@
 import RestaurantCard, {WithPromotedLabel} from "./RestaurantCard.js";  
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import CardShimmer from "./CardShimmer.js";
 import {Link} from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus.js";
+import userContext from "../utils/userContext.js";
 
 // not using keys (not acceptable) <<<<< using index as key <<<<<<<<< using unique id (best practice)
 const Body = () =>
@@ -33,7 +34,8 @@ const Body = () =>
     const fetchData = async () =>
     {
         // const data = await fetch ("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");        
-        const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+        // const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+        const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.7866747&lng=79.0037552&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
 
         const jsonData = await data.json();
         console.log(jsonData);
@@ -57,17 +59,29 @@ const Body = () =>
 
     // OR ADDING SHIMMER EFFECT IN THE RETURN STATEMENT USING TERNARY OPERATOR 
    
+
+
+    const {loggedInUser , setUserName} = useContext (userContext); // useContext is a hook that allows us to consume the context value (it takes the context object as an argument and returns the current context value)  
+
+
+
     return restaurantList.length === 0 ? <CardShimmer /> : (
         <div className="body">
             <div className="filter flex mb-2"> 
                 <div className="search-box">
-                    <input className="serch-input  shadow-lg rounded-md h-9 p-1 ml-2 border border-solid border-[rgb(164,181,237)]" id="text-input" type="text" placeholder="Search for restaurants..." value={searchText} onChange=
-                    {
-                        (e) =>
+                    <input 
+                        className="serch-input shadow-lg rounded-md h-9 p-1 ml-2 border border-solid border-[rgb(164,181,237)]" 
+                        id="text-input"
+                        type="text" 
+                        placeholder="Search for restaurants..." 
+                        value={searchText} 
+                        onChange=
                         {
-                            setSearchText (e.target.value);
-                        }
-                    }/>
+                            (e) =>
+                            {
+                                setSearchText (e.target.value);
+                            }
+                        }/>
                 </div>
 
                 {/* filtering the restaurant list based on the search query (case insensitive) */}   
@@ -85,7 +99,7 @@ const Body = () =>
                     </button>
                 </div>
 
-                <div className="filter-button  hover:bg-[rgb(100,156,230)] shadow-lg border border-solid rounded-2xl h-9 p-1 bg-[rgb(164,181,237)]">
+                <div className="filter-button hover:bg-[rgb(100,156,230)] shadow-lg border border-solid rounded-2xl h-9 p-1 bg-[rgb(164,181,237)]">
                     <button onClick=
                     {
                         () =>
@@ -98,6 +112,23 @@ const Body = () =>
                     }>
                         Top Rated Restaurants
                     </button>
+                </div>
+                <div className="input-box" m-4 p-4 flex>
+                    <label className="user-label pl-4"> UserName:</label>
+                    <input 
+                        className="serch-input shadow-lg rounded-md h-9 p-1 ml-2 border border-solid border-[rgb(164,181,237)]" 
+                        id="text-input" 
+                        type="text" 
+                        placeholder="Write your name..." 
+                        value={loggedInUser} 
+                        onChange=
+                        {
+                            (e) =>
+                            {
+                                setUserName (e.target.value);
+                            }
+                        }
+                    />
                 </div>
             </div>
             <div className="restaurant-container flex flex-wrap">
@@ -114,17 +145,19 @@ export default Body;
 
 
 // Another way to pass props to the restaurant card component
-// {/* <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian" />
-//                     <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
-//                     <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
-//                     <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
-//                     <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
-//                     <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
-//                     <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian"/>
-//                     <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
-//                     <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
-//                     <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
-//                     <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
-//                     <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
-//                     <RestaurantCard restaurantname="Meghana Food"  cuisine="Shahi Paneer, South Indian" />
-//                     <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" /> */}
+{/* <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian" />
+                    <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
+                    <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
+                    <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
+                    <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
+                    <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
+                    <RestaurantCard restaurantname="Meghana Food" cuisine="Shahi Paneer, South Indian"/>
+                    <RestaurantCard restaurantname="Biryani Blues" cuisine="Biryani, North Indian" />
+                    <RestaurantCard restaurantname="Domino's Pizza" cuisine="Pizza, Italian" />
+                    <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" />
+                    <RestaurantCard restaurantname="Pizza Hut" cuisine="Pizza, Italian" />
+                    <RestaurantCard restaurantname="Subway" cuisine="Sandwiches" />
+                    <RestaurantCard restaurantname="Meghana Food"  cuisine="Shahi Paneer, South Indian" />
+                    <RestaurantCard restaurantname="KFC" cuisine="Finger, Fast Food" /> 
+                                        
+*/}

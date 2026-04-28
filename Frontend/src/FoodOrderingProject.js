@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from "react";
+import React, {lazy, Suspense, useState,  useEffect} from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header.js";
 import Body from "./components/Body.js";
@@ -7,6 +7,7 @@ import ContactUs from "./components/ContactUs.js";
 import Error from "./components/Error.js";
 import RestaurantsMenu from "./components/RestaurantsMenu.js";
 import { createBrowserRouter, RouterProvider , Outlet} from "react-router-dom";
+import userContext from "./utils/userContext.js";
 
 // Chunking
 // Code Splitting
@@ -19,7 +20,24 @@ const Grocery = lazy (() =>import ("./components/Grocery.js"));
 
 const  AppLayout = () =>
 {
+
+    const [userName , setUserName] = useState ();
+
+
+    // Authentication code
+    useEffect (() =>
+    {
+        // Make an API call and send the username and password
+        const data = 
+        {
+            userName : "Govind",
+            email : "gy65905@gmail.com"
+        };
+        setUserName (data.userName);
+    }, []);
+
     return (
+        <userContext.Provider value = {{loggedInUser : userName , setUserName}}>
             <div className="app-layout">
                 <Header />
                 {/* if path = "/"  then load Body in the Outlet */}
@@ -27,6 +45,7 @@ const  AppLayout = () =>
                 {/* if path = "/ContactUs" then load ContactUs in the Outlet  and so on */}
                 <Outlet />
             </div>
+        </userContext.Provider>
     );
 }
 
