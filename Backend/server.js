@@ -1,48 +1,62 @@
-import express from "express";
-import cors from "cors";
-
+const express = require("express");
+const cors = require("cors");
+const axios = require("axios");
 const app = express();
-const PORT = 5000;
-
 app.use(cors());
-
-app.get("/menu", async (req, res) => {
-  try {
-    const restaurantId = req.query.id;
-
-    if (!restaurantId) {
-      return res.status(400).json({
-        error: "Restaurant ID is required"
-      });
+app.use(express.json());
+// Restaurant list
+app.get("/api/restaurants", async (req, res) => 
+{
+    try 
+    {
+        const { lat, lng } = req.query;
+        const response = await axios.get
+        (`https://www.swiggy.com/dapi/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`,
+            {
+                headers: 
+                {
+                    "Content-Type": "application/json",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                },
+            }
+        );
+        res.json(response.data);
     }
-
-    const url = `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=26.8467&lng=80.9462&restaurantId=${restaurantId}`;
-
-    console.log("Fetching:", url);
-
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-        "Accept": "application/json",
-        "Referer": "https://www.swiggy.com/",
-        "Origin": "https://www.swiggy.com"
-      }
-    });
-
-    const data = await response.json();
-
-    res.json(data);
-
-  } catch (error) {
-    console.log("FULL ERROR:", error.message);
-
-    res.status(500).json({
-      error: "Failed to fetch Swiggy data"
-    });
-  }
+    catch (error) 
+    {
+        console.error(error.message);
+        res.status(500).json({ error: "Something went wrong" });
+    }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// Restaurant menu
+app.get("/api/menu/:restId", async (req, res) => 
+{
+    try
+    {
+        const { restId } = req.params;
+        const { lat, lng } = req.query;
+        const response = await axios.get
+        (
+            `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat || "26.4783732"}&lng=${lng || "80.3542791"}&restaurantId=${restId}&catalog_qa=undefined&submitAction=ENTER`,
+            {
+                headers: 
+                {
+                    "Content-Type": "application/json",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                },
+            }
+        );
+        res.json(response.data);
+    }
+    catch (error) 
+    {
+        console.error(error.message);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+});
+
+app.listen(5000, () => 
+{
+    console.log("Server running on port 5000");
 });

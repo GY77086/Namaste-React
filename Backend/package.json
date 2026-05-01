@@ -11,7 +11,6 @@
     "React"],
   "author": "dbugger01",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "axios": "^1.13.6",
     "cors": "^2.8.6",

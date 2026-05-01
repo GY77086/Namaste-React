@@ -10,7 +10,7 @@ const useRestaurantMenu = () =>
     }, []);
     const fetchData = async () =>
     {
-        // const data = await fetch ("https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=26.4750346&lng=80.3532749&restaurantId=126281&catalog_qa=undefined&submitAction=ENTER");
+        // const data = await fetch ("https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=26.4783732&lng=80.3542791&restaurantId=608598&catalog_qa=undefined&submitAction=ENTER");
         // const jsonData = await data.json ();
         // setResInfo(jsonData);
         setResInfo(menuData);
@@ -19,4 +19,5 @@ const useRestaurantMenu = () =>
 }
 
 export default useRestaurantMenu;
+
 

@@ -6,14 +6,14 @@ import userContext from "../utils/userContext.js";
 const Header = () =>
 {
     const [loginButton, setLoginButton] = useState ("Login");
-    console.log("Header rendered");
+    // console.log("Header rendered");
     const internetStatus = useOnlineStatus ();
     // if no dependency array is provided, useEffect will run after every render of the component.
     // if an empty dependency array is provided, useEffect will run only once after the initial render of the component.
     // if a dependency array is provided with some state variables, useEffect will run after the initial render and after every update of the specified state variables.
     
     const {loggedInUser} = useContext (userContext);
-    console.log (loggedInUser);
+    // console.log (loggedInUser);
     return (
         <div className="header justify-between flex bg-[rgb(164,181,237)] w-auto h-[100px] shadow-lg mb-3 ">
             <div className="logo">
@@ -44,5 +44,4 @@ const Header = () =>
         </div>
     );
 }  
-
 export default Header;

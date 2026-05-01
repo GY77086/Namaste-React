@@ -13,7 +13,7 @@ const Body = () =>
     const [filteredRestaurantList, setFilteredRestaurantList] = useState ([]); 
     const [searchText, setSearchText] = useState ("");
     const PromotedRestaurants = WithPromotedLabel(RestaurantCard); // Higher order component (HOC) - it is a function that takes a component as an argument and returns a new component (it is used to add additional functionality to a component without modifying the original component)
-    console.log ("Body rendered");
+    // console.log ("Body rendered");
     // OR
 
     // const arr = useState (restList);
@@ -33,12 +33,11 @@ const Body = () =>
 
     const fetchData = async () =>
     {
-        // const data = await fetch ("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");        
-        // const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
-        const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.7866747&lng=79.0037552&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+        const data = await fetch ("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.4750346&lng=80.3532749&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");        
+        // const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.7866747&lng=79.0037552&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
 
         const jsonData = await data.json();
-        console.log(jsonData);
+        // console.log(jsonData);
         const restaurants = jsonData?.data?.cards?.map((c) => c?.card?.card?.gridElements?.infoWithStyle?.restaurants)?.find((res) => {if(res != undefined){return res;}}); // optional chaining (?.) - it allows us to access the properties of an object without having to check if the object is null or undefined (it returns undefined if the object is null or undefined)
         console.log(restaurants);        
         setRestaurantList (restaurants);
@@ -113,8 +112,8 @@ const Body = () =>
                         Top Rated Restaurants
                     </button>
                 </div>
-                <div className="input-box" m-4 p-4 flex>
-                    <label className="user-label pl-4"> UserName:</label>
+                <div className="input-box flex">
+                    <label className="user-label pl-4 m-1"> UserName:</label>
                     <input 
                         className="serch-input shadow-lg rounded-md h-9 p-1 ml-2 border border-solid border-[rgb(164,181,237)]" 
                         id="text-input" 
