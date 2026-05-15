@@ -2,15 +2,23 @@ import CardShimmer from "./CardShimmer";
 import {useParams} from "react-router-dom";
 import useRestaurantMenu from "../utils/useRestaurantMenu.js";
 import useOnlineStatus from "../utils/useOnlineStatus.js";
+import RestaurantCategory from "./RestaurantCategory.js";
+import {useState} from "react";
+
 const RestaurantsMenu = () =>
 {
     
     const {restId} = useParams ();
-    console.log (restId);
+    // console.log (restId);
+    const dummy = "dummy data";
 
     const restInfo = useRestaurantMenu ();
 
     const internetStatus = useOnlineStatus ();
+
+    const [showIndex, setShowIndex] = useState (null);
+
+
     if (internetStatus === false)
     {
         return <h1> Looks Like You Are Offline !! Please check Your Internet Connection 🙄🙄 </h1>
@@ -32,24 +40,38 @@ const RestaurantsMenu = () =>
         avgRating,
     } = restaurantInfo || {};
 
-    const itemCards = restInfo?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[2]?.card?.card.itemCards || {};
-    console.log (itemCards);
+    const itemCards = restInfo?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card.itemCards || {};
+    // console.log (restInfo?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
+    const categories = restInfo?.data?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter ((categ) => categ.card?.card?.["@type"] === "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory");
+    // console.log (categories);
+
 
     return (
-        <div className="menu flex pl-5 m-5 pb-5 shadow-lg rounded-3xl ">
-            <div className="card-img">
-                <img className="menu-img rounded-lg" src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_264,h_324,c_fill/RX_THUMBNAIL/IMAGES/VENDOR/2024/6/20/94149176-2053-43b4-b291-2864557cfac5_862473.JPG" alt={name}/> 
-            </div>
-            <div className="menu-details mx-5">
-                <h2 className="name font-bold text-xl text-[rgb(139,1,1)]">{name}</h2>
-                <h5>
-                    {cuisines?.join(",")} - {costForTwoMessage} 
-                </h5>
-                <h5> {"Rating - "} {avgRating} ⭐</h5>
-                <ul>
-                    {itemCards.map ((item) => <li key = {item.card.info.id}>{item.card.info.name} - Rs.{item.card.info.price / 100}</li>)}
-                </ul>
-            </div>
+        <div 
+            className = "menu  text-center "
+        >
+            <h1 
+                className = "name font-bold text-3xl text-[rgb(139,1,1)] my-2"
+            >
+                {name}
+            </h1>
+            <p 
+                className = "cuisines font-bold text-xl"
+            >
+                {cuisines?.join(",")} - {costForTwoMessage}
+            </p> 
+            {/* Categories accordian */}
+            {categories.map ((categ, index) => 
+                // controlled component - showItems is being controlled by parent component (RestaurantsMenu)
+                <RestaurantCategory 
+                    data = {categ?.card?.card} 
+                    key = {categ?.card?.card?.title}
+                    showItems = {index === showIndex ? true : false}
+                    setShowIndex = {setShowIndex} // changing the state variable in parent component (RestaurantsMenu) from child component (RestaurantCategory) indirectly .
+                    index = {index}
+                    local = {dummy}
+                />
+            )}
         </div>
     );
 }

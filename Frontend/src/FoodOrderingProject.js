@@ -8,6 +8,11 @@ import Error from "./components/Error.js";
 import RestaurantsMenu from "./components/RestaurantsMenu.js";
 import { createBrowserRouter, RouterProvider , Outlet} from "react-router-dom";
 import userContext from "./utils/userContext.js";
+import {Provider} from "react-redux";
+import appStore from "./utils/appStore.js";
+import Cart from "./components/Cart.js";
+
+
 
 // Chunking
 // Code Splitting
@@ -37,6 +42,7 @@ const  AppLayout = () =>
     }, []);
 
     return (
+        <Provider store = {appStore}>
         <userContext.Provider value = {{loggedInUser : userName , setUserName}}>
             <div className="app-layout">
                 <Header />
@@ -46,6 +52,7 @@ const  AppLayout = () =>
                 <Outlet />
             </div>
         </userContext.Provider>
+        </Provider>
     );
 }
 
@@ -77,6 +84,10 @@ const appRouter = createBrowserRouter
                     {
                         path: "/Grocery",
                         element: <Suspense fallback = {<h1> Loading ........</h1>}><Grocery /></Suspense>
+                    },
+                    {
+                        path : "/Cart",
+                        element : <Cart />
                     }
                 ],
             errorElement : <Error />
