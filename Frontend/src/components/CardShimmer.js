@@ -26,4 +26,4 @@ const CardShimmer = () =>
         </div>
     );
 };
-export default CardShimmer;
+export default CardShimmer; 
