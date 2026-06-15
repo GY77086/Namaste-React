@@ -11,8 +11,8 @@ app.use(cors({
 
 // Proxy endpoint for Swiggy restaurants
 app.get('/api/restaurants', async (req, res) => {
-    const lat = req.query.lat || '12.9715987';
-    const lng = req.query.lng || '77.5945627';
+    const lat = req.query.lat || '26.449923';
+    const lng = req.query.lng || '80.331873';
 
     try {
         // Dynamic import for node-fetch since you are using CommonJS require
