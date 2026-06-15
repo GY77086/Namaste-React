@@ -43,6 +43,73 @@
 
 
 
+// const express = require('express');
+// const cors = require('cors');
+
+// const app = express();
+// const PORT = process.env.PORT || 5000;
+
+// app.use(cors({
+//     origin: '*' 
+// }));
+
+// // 1. Your original working restaurant list endpoint
+// app.get('/api/restaurants', async (req, res) => {
+//     const lat = req.query.lat || '26.4750346';
+//     const lng = req.query.lng || '80.3532749';
+
+//     try {
+//         const fetch = (await import('node-fetch')).default;
+//         const response = await fetch(
+//             `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`,
+//             {
+//                 headers: {
+//                     'Accept': 'application/json',
+//                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+//                 }
+//             }
+//         );
+//         const data = await response.json();
+//         res.json(data);
+//     } catch (error) {
+//         console.error('Error fetching from Swiggy:', error);
+//         res.status(500).json({ error: 'Failed to fetch data' });
+//     }
+// });
+
+// // ✅ 2. ADD THIS NEW ENDPOINT FOR THE MENU CONTROLLER BELOW THE FIRST ONE
+// app.get('/api/menu', async (req, res) => {
+//     const resId = req.query.resId;
+//     if (!resId) {
+//         return res.status(400).json({ error: 'Restaurant ID (resId) is required' });
+//     }
+
+//     const lat = '26.4750346'; 
+//     const lng = '80.3532749';
+
+//     try {
+//         const fetch = (await import('node-fetch')).default;
+//         const response = await fetch(
+//             `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${resId}`,
+//             {
+//                 headers: {
+//                     'Accept': 'application/json',
+//                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+//                 }
+//             }
+//         );
+//         const data = await response.json();
+//         res.json(data);
+//     } catch (error) {
+//         console.error(`Error fetching menu for restaurant ${resId}:`, error);
+//         res.status(500).json({ error: 'Failed to fetch menu data' });
+//     }
+// });
+
+// app.listen(PORT, () => {
+//     console.log(`Server running on port ${PORT}`);
+// });
+
 const express = require('express');
 const cors = require('cors');
 
@@ -53,7 +120,7 @@ app.use(cors({
     origin: '*' 
 }));
 
-// 1. Your original working restaurant list endpoint
+// 1. Original working restaurant list endpoint
 app.get('/api/restaurants', async (req, res) => {
     const lat = req.query.lat || '26.4750346';
     const lng = req.query.lng || '80.3532749';
@@ -77,32 +144,46 @@ app.get('/api/restaurants', async (req, res) => {
     }
 });
 
-// ✅ 2. ADD THIS NEW ENDPOINT FOR THE MENU CONTROLLER BELOW THE FIRST ONE
+// ✅ 2. UPDATED MENU ENDPOINT WITH BYPASS HEADERS
 app.get('/api/menu', async (req, res) => {
     const resId = req.query.resId;
     if (!resId) {
         return res.status(400).json({ error: 'Restaurant ID (resId) is required' });
     }
 
-    const lat = '26.4750346'; 
-    const lng = '80.3532749';
+    // Using exact matching coordinates to ensure regional permission alignment
+    const lat = req.query.lat || '26.4750346'; 
+    const lng = req.query.lng || '80.3532749';
 
     try {
         const fetch = (await import('node-fetch')).default;
         const response = await fetch(
             `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${resId}`,
             {
+                method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                    'Referer': 'https://www.swiggy.com/',
+                    'Origin': 'https://www.swiggy.com'
                 }
             }
         );
+
+        // If Swiggy returns a bad status code (like 403 or 500), catch it explicitly
+        if (!response.ok) {
+            throw new Error(`Swiggy API responded with status code: ${response.status}`);
+        }
+
         const data = await response.json();
         res.json(data);
     } catch (error) {
         console.error(`Error fetching menu for restaurant ${resId}:`, error);
-        res.status(500).json({ error: 'Failed to fetch menu data' });
+        res.status(500).json({ 
+            error: 'Failed to fetch menu data',
+            details: error.message 
+        });
     }
 });
 
