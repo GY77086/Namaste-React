@@ -55,9 +55,6 @@
 //     console.log(`Server running on port ${PORT}`);
 // });
 
-
-
-
 const express = require('express');
 const cors = require('cors');
 
@@ -99,7 +96,7 @@ app.get('/api/restaurants', async (req, res) => {
     }
 });
 
-// ✅ 2. FIXED MENU ENDPOINT WITH AUTO-DYNAMIC UNIQUE FALLBACK GENERATION
+// 2. FIXED MENU ENDPOINT WITH AUTO-DYNAMIC UNIQUE FALLBACK GENERATION
 app.get('/api/menu', async (req, res) => {
     const resId = req.query.resId;
     if (!resId) {
@@ -121,31 +118,31 @@ app.get('/api/menu', async (req, res) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Swiggy API block encountered. Status: ${response.status}`);
+            throw new Error(`Swiggy proxy block encountered. Status: ${response.status}`);
         }
 
         const data = await response.json();
         res.json(data);
     } catch (error) {
-        console.warn(`[Fallback Activated] Generating unique simulated menu for Restaurant ID: ${resId}`);
+        console.warn(`[Proxy Fallback Engaged] Generating distinct menu profile for Restaurant ID: ${resId}`);
         
-        // Generate distinct numbers and naming variations using the ID string 
-        const numericSeed = parseInt(resId.replace(/\D/g, '')) || 101;
+        // Compute unique properties based on the incoming restaurant ID string
+        const numericSeed = parseInt(resId.replace(/\D/g, '')) || 100;
         const shortId = resId.slice(-3);
         const dynamicRating = (4.0 + (numericSeed % 9) * 0.1).toFixed(1);
-        
-        // Create an isolated payload structuring Swiggy's exact expected JSON nesting format
-        const dynamicMockPayload = {
+
+        // This JSON matches your exact .find() array operations in RestaurantsMenu.js
+        const uniqueMockPayload = {
             data: {
                 cards: [
+                    // Card 1: Provides restInfo?.data?.cards?.find(c => c?.card?.card?.info)
                     {
                         card: {
                             card: {
-                                "@type": "type.googleapis.com/swiggy.presentation.food.v2.RestaurantNestedItemTopCard",
                                 info: {
                                     id: resId,
                                     name: `Premium Kitchen Hub (Branch #${shortId})`,
-                                    cuisines: ["Gourmet Delicacies", "North Indian", "Continental"],
+                                    cuisines: ["North Indian", "Gourmet Fast Food", "Desserts"],
                                     costForTwoMessage: `₹${250 + (numericSeed % 5) * 50} for two`,
                                     avgRating: dynamicRating,
                                     totalRatingsString: `${100 + (numericSeed % 8) * 50}+ ratings`,
@@ -154,6 +151,7 @@ app.get('/api/menu', async (req, res) => {
                             }
                         }
                     },
+                    // Card 2: Provides restInfo?.data?.cards?.find(c => c?.groupedCard)
                     {
                         groupedCard: {
                             cardGroupMap: {
@@ -163,30 +161,10 @@ app.get('/api/menu', async (req, res) => {
                                             card: {
                                                 card: {
                                                     "@type": "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory",
-                                                    title: "Recommended Specials",
+                                                    title: "Signature House Specials",
                                                     itemCards: [
-                                                        {
-                                                            card: {
-                                                                info: {
-                                                                    id: `dish-1-${resId}`,
-                                                                    name: `Signature Paneer Tikka Masala V${shortId}`,
-                                                                    price: 32500,
-                                                                    description: "House special char-grilled cheese cubes simmered in velvet rich creamy onion gravy.",
-                                                                    isVeg: 1
-                                                                }
-                                                            }
-                                                        },
-                                                        {
-                                                            card: {
-                                                                info: {
-                                                                    id: `dish-2-${resId}`,
-                                                                    name: `Chef's Special Fusion Bowl #${shortId}`,
-                                                                    price: 28000,
-                                                                    description: "Handpicked premium garden vegetables tossed cleanly in special signature spices.",
-                                                                    isVeg: 1
-                                                                }
-                                                            }
-                                                        }
+                                                        { card: { info: { id: `dish-1-${resId}`, name: `Chef's Special Curry V${shortId}`, price: 34000, description: "Authentic slow-simmered cottage cheese in creamy velvet gravy.", isVeg: 1 } } },
+                                                        { card: { info: { id: `dish-2-${resId}`, name: `Crispy Imperial Sizzler Platter`, price: 29000, description: "Fresh garden accompaniments roasted crisp in signature spices.", isVeg: 1 } } }
                                                     ]
                                                 }
                                             }
@@ -195,19 +173,10 @@ app.get('/api/menu', async (req, res) => {
                                             card: {
                                                 card: {
                                                     "@type": "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory",
-                                                    title: "Breads & Accompaniments",
+                                                    title: "Breads & Rice Items",
                                                     itemCards: [
-                                                        {
-                                                            card: {
-                                                                info: {
-                                                                    id: `dish-3-${resId}`,
-                                                                    name: "Stuffed Hearth Garlic Naan",
-                                                                    price: 9500,
-                                                                    description: "Traditional clay-oven baked flatbread infused with rich minced garlic and butter glazing.",
-                                                                    isVeg: 1
-                                                                }
-                                                            }
-                                                        }
+                                                        { card: { info: { id: `dish-3-${resId}`, name: "Butter Glazed Garlic Naan", price: 8500, description: "Traditional clay-oven hearth baked bread.", isVeg: 1 } } },
+                                                        { card: { info: { id: `dish-4-${resId}`, name: "Aromatic Smoked Basmati Pilaf", price: 16000, description: "Long grain premium basmati infused with pure saffron strands.", isVeg: 1 } } }
                                                     ]
                                                 }
                                             }
@@ -221,7 +190,7 @@ app.get('/api/menu', async (req, res) => {
             }
         };
         
-        res.json(dynamicMockPayload);
+        res.json(uniqueMockPayload);
     }
 });
 
