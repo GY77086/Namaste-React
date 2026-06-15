@@ -7,14 +7,18 @@
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["Namaste",
-    "React"],
+  "keywords": [
+    "Namaste",
+    "React"
+  ],
   "author": "dbugger01",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.13.6",
+    "axios": "^1.18.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "npm": "^11.17.0",
+    "uninstall": "^0.0.0"
   }
 }
