@@ -279,7 +279,6 @@
 
 
 
-
 const express = require('express');
 const cors = require('cors');
 
@@ -290,7 +289,7 @@ app.use(cors({
     origin: '*' 
 }));
 
-// 1. Original working restaurant list endpoint
+// 1. Working restaurant list endpoint
 app.get('/api/restaurants', async (req, res) => {
     const lat = req.query.lat || '26.4750346';
     const lng = req.query.lng || '80.3532749';
@@ -314,7 +313,7 @@ app.get('/api/restaurants', async (req, res) => {
     }
 });
 
-// 2. Updated dynamic menu routing endpoint
+// ✅ 2. SECURED MENU ENDPOINT WITH HARDENED BROWSER HEADERS
 app.get('/api/menu', async (req, res) => {
     const resId = req.query.resId;
     if (!resId) {
@@ -326,8 +325,10 @@ app.get('/api/menu', async (req, res) => {
 
     try {
         const fetch = (await import('node-fetch')).default;
-        const targetUrl = `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${resId}&catalog_qa=undefined&submitAction=ENTER`;
+        const targetUrl = `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${lat}&lng=${lng}&restaurantId=${resId}`;
         
+        console.log(`Forwarding menu proxy request for restaurant ID: ${resId}`);
+
         const response = await fetch(
             targetUrl,
             {
@@ -335,21 +336,25 @@ app.get('/api/menu', async (req, res) => {
                 headers: {
                     'Accept': 'application/json',
                     'Accept-Language': 'en-US,en;q=0.9',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                    // Hardened User-Agent footprint mimicking a real Chrome window environment
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
                     'Referer': 'https://www.swiggy.com/',
                     'Origin': 'https://www.swiggy.com'
                 }
             }
         );
 
+        // If Swiggy returns a bad status code, log the context instead of crashing silently
         if (!response.ok) {
-            throw new Error(`Swiggy API responded with status code: ${response.status}`);
+            const errBody = await response.text();
+            console.error(`Swiggy API Error response body: ${errBody}`);
+            throw new Error(`Swiggy answered with an invalid network status code: ${response.status}`);
         }
 
         const data = await response.json();
         res.json(data);
     } catch (error) {
-        console.error(`Error fetching menu for restaurant ${resId}:`, error);
+        console.error(`Error fetching menu for restaurant ${resId}:`, error.message);
         res.status(500).json({ 
             error: 'Failed to fetch menu data',
             details: error.message 
