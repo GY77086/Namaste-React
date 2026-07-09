@@ -11,6 +11,7 @@ import userContext from "./utils/userContext.js";
 import {Provider} from "react-redux";
 import appStore from "./utils/appStore.js";
 import Cart from "./components/Cart.js";
+import OrderConfirmed from "./components/OrderConfirmed.js";
 
 
 
@@ -88,6 +89,10 @@ const appRouter = createBrowserRouter
                     {
                         path : "/Cart",
                         element : <Cart />
+                    },
+                    {
+                        path: "/order-confirmed",
+                        element: <OrderConfirmed /> 
                     }
                 ],
             errorElement : <Error />
@@ -99,3 +104,4 @@ const appRouter = createBrowserRouter
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<RouterProvider router={appRouter} />);
+
