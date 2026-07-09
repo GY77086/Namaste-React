@@ -1,22 +1,3 @@
-// import React from 'react'
-
-// const Grocery = () => 
-// {
-//     return (
-//         <div>
-//             <h1>
-//                 Our grocery online store, and we have a lot of child components inside this web page !!!
-//             </h1>
-//         </div>
-//     );
-// }
-
-// export default Grocery
-
-
-
-
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { ShoppingCart, Search, Plus, Minus, X, Trash2, Leaf, Star, Loader2, CheckCircle2 } from 'lucide-react';
 
